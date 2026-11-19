@@ -268,20 +268,24 @@ export const archiveEndpoints = () =>
 export async function archiveCall(to: string, data: string, block: number): Promise<string> {
   let last: unknown = new RpcError("no archive endpoint");
   for (const url of archiveEndpoints()) {
-    try {
-      const body = (await postPatient(url, { jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to, data }, `0x${block.toString(16)}`] })) as {
-        result?: string;
-        error?: { message: string; code?: number };
-      };
-      if (body.error) {
-        if (/revert/i.test(body.error.message) || body.error.code === 3) throw new RpcError(body.error.message, true);
-        throw new RpcError(body.error.message);
+    // A load-balanced public endpoint sometimes routes to a node without old state ("Unknown state"): ask again a few times.
+    for (let attempt = 0; attempt < 4; attempt++) {
+      try {
+        const body = (await postPatient(url, { jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to, data }, `0x${block.toString(16)}`] })) as {
+          result?: string;
+          error?: { message: string; code?: number };
+        };
+        if (body.error) {
+          if (/revert/i.test(body.error.message) || body.error.code === 3) throw new RpcError(body.error.message, true);
+          throw new RpcError(body.error.message);
+        }
+        if (typeof body.result !== "string") throw new RpcError("malformed answer");
+        return body.result;
+      } catch (e) {
+        if (e instanceof RpcError && e.revert) throw e;
+        last = e;
+        await sleep(250 + attempt * 400);
       }
-      if (typeof body.result !== "string") throw new RpcError("malformed answer");
-      return body.result;
-    } catch (e) {
-      if (e instanceof RpcError && e.revert) throw e;
-      last = e;
     }
   }
   throw last;

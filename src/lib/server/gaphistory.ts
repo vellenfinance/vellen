@@ -77,7 +77,7 @@ async function pool<T, R>(items: T[], n: number, f: (t: T) => Promise<R>): Promi
   return out;
 }
 
-export async function readHistory(snap: GapSnapshot, samples = 36): Promise<GapHistory> {
+export async function readHistory(snap: GapSnapshot, samples = 28): Promise<GapHistory> {
   const head = snap.block;
   // One topic value per query: the official RPC allows only 100,000 blocks for a query with an OR list in a topic position.
   const dep = await scanBack(logReader({ address: INDEX.vault, topics: [DEPOSIT_TOPIC] }), INDEX.deployBlock, head, { maxCalls: 20 });
@@ -85,7 +85,7 @@ export async function readHistory(snap: GapSnapshot, samples = 36): Promise<GapH
   const scan = { gaps: [...dep.gaps, ...wd.gaps] };
   const logs = [...dep.logs, ...wd.logs].sort((x, y) => Number(BigInt(x.blockNumber) - BigInt(y.blockNumber)) || Number(BigInt(x.logIndex) - BigInt(y.logIndex)));
 
-  const executions: Execution[] = await pool(logs, 3, async (l) => {
+  const executions: Execution[] = await pool(logs, 2, async (l) => {
     const isMint = l.topics[0] === DEPOSIT_TOPIC;
     const assets = word(l.data, 0);
     const shares = word(l.data, 1);
@@ -110,7 +110,7 @@ export async function readHistory(snap: GapSnapshot, samples = 36): Promise<GapH
   const step = Math.max(1, Math.floor((head - start) / Math.max(1, samples - 1)));
   const blocks = Array.from({ length: samples }, (_, k) => Math.min(head, start + k * step));
   let archive = true;
-  const sampleRows: Sample[] = await pool(blocks, 3, async (b) => {
+  const sampleRows: Sample[] = await pool(blocks, 2, async (b) => {
     const [nav, basket, time] = await Promise.all([navAt(b), basketAt(b, snap), blockTime(b)]);
     if (nav === null) archive = false;
     return {

@@ -10,9 +10,9 @@ export function FloatPill() {
   const path = usePathname();
   const [hidden, setHidden] = useState(true);
   const [far, setFar] = useState(false);
-  // On phones the pill only rides along the first screen, so it never sits on top of content further down.
+  // On phones it shows only on the home page, and below 1024 px only on the first screen, so it never sits on top of content.
   useEffect(() => {
-    const on = () => setFar(window.innerWidth < 768 && window.scrollY > window.innerHeight * 0.6);
+    const on = () => setFar((window.innerWidth < 768 && window.location.pathname !== "/") || (window.innerWidth < 1024 && window.scrollY > window.innerHeight * 0.6));
     on();
     window.addEventListener("scroll", on, { passive: true });
     window.addEventListener("resize", on);
@@ -20,7 +20,7 @@ export function FloatPill() {
       window.removeEventListener("scroll", on);
       window.removeEventListener("resize", on);
     };
-  }, []);
+  }, [path]);
   useEffect(() => {
     let off = false;
     try {
