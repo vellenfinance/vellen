@@ -33,7 +33,7 @@ export function RuleTabs() {
         </div>
         <SampleBadge label="Sample numbers" />
       </div>
-      <div className="mt-10 grid items-end gap-8 md:grid-cols-[1fr_auto]">
+      <div key={ex.key} className="swap-in mt-10 grid items-end gap-8 md:grid-cols-[1fr_auto]">
         <div>
           <p className="t14 muted">
             Price ${(Number(ex.price) / 1e18).toFixed(3)} vs NAV $1.000 · threshold 2 %
@@ -58,7 +58,7 @@ export function Faq() {
   const list = who === "holders" ? FAQ_HOLDERS : FAQ_BUILDERS;
   return (
     <div className="grid gap-10 md:grid-cols-[1fr_1.4fr]" data-testid="faq">
-      <div>
+      <div data-reveal="">
         <h2 className="d4">Questions, answered plainly</h2>
         <div className="seg mt-6" role="group" aria-label="Audience">
           <button type="button" aria-pressed={who === "holders"} onClick={() => setWho("holders")}>
@@ -69,7 +69,7 @@ export function Faq() {
           </button>
         </div>
       </div>
-      <div className="grid gap-2">
+      <div key={who} className="grid gap-2" data-stagger>
         {list.map((f) => (
           <details key={f.q} className="acc">
             <summary>

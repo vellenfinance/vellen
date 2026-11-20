@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BRAND } from "@/config/brand";
 import { FEATURES } from "@/config/status";
 import { ArrowDown, ArrowRight } from "@/components/site/Icons";
-import { Reveal } from "@/components/site/Reveal";
+import { Reveal, SplitChars, Words } from "@/components/site/Reveal";
 import { StatusBadge } from "@/components/site/PageHead";
 import { ConstituentCards, HeroReadout, LivePanel, StatsLine } from "@/components/home/Live";
 import { Faq, RuleTabs } from "@/components/home/Interactive";
@@ -12,35 +12,56 @@ import { Faq, RuleTabs } from "@/components/home/Interactive";
    claims we do not make (in the testimonial slot), FAQ. Every number on it is live or labelled. */
 
 const go = <ArrowRight size={14} />;
+const d = (s: number) => ({ "--d": `${s}s` }) as React.CSSProperties;
+const SOURCES = ["ERC-4626 index token", "its constituent list", "Chainlink price feeds", "Uniswap v3 pools", "Uniswap v4 PoolManager logs"];
 
 function Hero() {
   return (
     <section className="hero dark flex flex-col" data-testid="hero">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <div aria-hidden="true" className="hero-art pointer-events-none absolute inset-0" data-parallax="0.35">
         <div className="absolute top-[54%] left-1/2 h-[min(70vw,720px)] w-[min(70vw,720px)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
         <div className="absolute top-[54%] left-1/2 h-[min(46vw,470px)] w-[min(46vw,470px)] -translate-x-1/2 -translate-y-1/2 rounded-full border-[10px] border-[rgba(255,122,82,0.35)] blur-[1px]" />
         <div className="absolute top-[64%] left-[66%] h-[min(18vw,180px)] w-[min(18vw,180px)] rounded-full opacity-80 bg-[radial-gradient(circle,#ff9b6e,#e2412c_55%,rgba(226,65,44,0)_72%)] blur-[2px]" />
       </div>
       <div className="wrap relative flex flex-1 flex-col items-center justify-center pt-[120px] pb-16 text-center">
-        <p className="eyebrow">Concept · working prototype · planned for {BRAND.chainName}</p>
-        <h1 className="d1 mt-6 max-w-[1200px]">IPO index price vs.&nbsp;NAV.</h1>
-        <p className="t18 mt-6 max-w-[620px] font-normal text-[rgba(242,236,226,0.8)]">{BRAND.tagline}</p>
-        <Link href="/gap" className="pill pill-cream lg mt-10" data-testid="hero-cta">
+        <p className="eyebrow intro" style={d(0.1)}>
+          Concept · working prototype · planned for {BRAND.chainName}
+        </p>
+        <h1 className="d1 mt-6 max-w-[1200px]">
+          <SplitChars text={"IPO index price vs.\u00a0NAV."} />
+        </h1>
+        <p className="t18 intro mt-6 max-w-[620px] font-normal text-[rgba(242,236,226,0.8)]" style={d(0.9)}>
+          {BRAND.tagline}
+        </p>
+        <Link href="/gap" className="pill pill-cream lg intro mt-10" style={d(1.05)} data-testid="hero-cta">
           Open the Gap Watch {go}
         </Link>
-        <p className="t15 mt-4 text-[rgba(242,236,226,0.6)]">free · no wallet · no token · live from the chain</p>
-        <div className="mt-14 max-w-[900px]">
+        <p className="t15 intro mt-4 text-[rgba(242,236,226,0.6)]" style={d(1.15)}>
+          free · no wallet · no token · live from the chain
+        </p>
+        <div className="intro mt-14 max-w-[900px]" style={d(1.3)}>
           <HeroReadout />
         </div>
       </div>
-      <div className="relative border-t border-white/10">
-        <div className="wrap flex flex-wrap items-center justify-center gap-x-10 gap-y-2 py-5 t14 text-[rgba(242,236,226,0.45)]">
-          <span>Read from:</span>
-          <span>ERC-4626 index token</span>
-          <span>its constituent list</span>
-          <span>Chainlink price feeds</span>
-          <span>Uniswap v3 pools</span>
-          <span>Uniswap v4 PoolManager logs</span>
+      <div className="intro relative border-t border-white/10" style={d(1.45)}>
+        <p className="sr-only">Read from: {SOURCES.join(", ")}</p>
+        <div className="marquee-row py-5 t14 text-[rgba(242,236,226,0.45)]" aria-hidden="true">
+          <div className="marquee slow">
+            {[0, 1].map((k) => (
+              <div key={k} className="flex items-center gap-x-10 pr-10">
+                <span>Read from:</span>
+                {SOURCES.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
+                <span>·</span>
+                <span>Read from:</span>
+                {SOURCES.map((t) => (
+                  <span key={`${t}-b`}>{t}</span>
+                ))}
+                <span>·</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -51,9 +72,9 @@ function Statement() {
   return (
     <section className="band dark flex min-h-[78vh] items-center" data-testid="statement">
       <div className="wrap text-center">
-        <Reveal>
-          <h2 className="d4 mx-auto max-w-[860px]">A premium is a number with an age. Vellen shows you both, and where each one came from.</h2>
-        </Reveal>
+        <h2 className="d4 mx-auto max-w-[860px]" data-words>
+          <Words text="A premium is a number with an age. Vellen shows you both, and where each one came from." />
+        </h2>
       </div>
     </section>
   );
@@ -68,29 +89,32 @@ function Intro() {
   return (
     <section className="band dark py-24 md:py-32" data-testid="intro">
       <div className="wrap text-center">
-        <Reveal>
-          <p className="t18 mx-auto max-w-[600px]">
-            One question, answered with live chain data: <span className="text-[rgba(242,236,226,0.6)]">how far is an IPO index token&apos;s price above or below the value of what it holds?</span>
-          </p>
-        </Reveal>
-        <div className="mx-auto mt-10 grid max-w-[960px] gap-3 text-left md:grid-cols-3">
+        <p className="t18 mx-auto max-w-[600px]" data-words>
+          <Words text="One question, answered with live chain data:" />{" "}
+          <span className="text-[rgba(242,236,226,0.6)]">
+            <Words text="how far is an IPO index token's price above or below the value of what it holds?" />
+          </span>
+        </p>
+        <div className="mx-auto mt-10 grid max-w-[960px] gap-3 text-left md:grid-cols-3" data-stagger>
           {cards.map(([b, r], i) => (
-            <Reveal key={i} delay={i * 80} className="glass min-h-[116px] p-5 t15">
+            <div key={i} className="glass min-h-[116px] p-5 t15">
               <span className="text-[rgba(242,236,226,0.7)]">
                 <b className="font-medium text-[var(--cream)]">{b}</b>
                 {r}
               </span>
-            </Reveal>
+            </div>
           ))}
         </div>
-        <Link href="/gap" className="pill pill-black lg mt-10">
-          Open the Gap Watch {go}
-        </Link>
-        <p className="t18 mx-auto mt-20 max-w-[620px]">
+        <Reveal className="mt-10">
+          <Link href="/gap" className="pill pill-black lg">
+            Open the Gap Watch {go}
+          </Link>
+        </Reveal>
+        <p className="t18 mx-auto mt-20 max-w-[620px]" data-reveal="">
           Every number carries its timestamp and a link to the contract, feed or transaction it was read from, so you can check it yourself instead of trusting a
           screenshot.
         </p>
-        <p className="mt-10 inline-flex items-center gap-3 text-[22px] font-medium">
+        <p className="mt-10 inline-flex items-center gap-3 text-[22px] font-medium" data-reveal="" data-delay="120">
           Planned for {BRAND.chainName} <span className="tag proto">Prototype runs today</span>
         </p>
       </div>
@@ -107,14 +131,14 @@ function Product() {
   ];
   return (
     <section className="wrap pt-4" data-testid="product">
-      <div className="hero dark rounded-[24px] px-6 py-16 text-center md:px-16 md:py-24" style={{ minHeight: 0 }}>
+      <div className="hero dark rounded-[24px] px-6 py-16 text-center md:px-16 md:py-24" style={{ minHeight: 0 }} data-reveal="scale">
         <Reveal>
           <h2 className="d3">The Gap Watch</h2>
           <p className="t18 mx-auto mt-4 max-w-[520px] font-normal">
             One screen for one index token. <span className="text-[rgba(242,236,226,0.5)]">Built to show its sources.</span>
           </p>
         </Reveal>
-        <div aria-hidden="true" className="mx-auto my-14 grid max-w-[620px] grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div aria-hidden="true" className="mx-auto my-14 grid max-w-[620px] grid-cols-[1fr_auto_1fr] items-center gap-4" data-stagger>
           <div className="rounded-full border border-white/25 py-5 text-center">
             <p className="t12 muted">price</p>
             <p className="d4 mono">?</p>
@@ -125,7 +149,7 @@ function Product() {
             <p className="d4 mono">$</p>
           </div>
         </div>
-        <div className="grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 text-left sm:grid-cols-2 lg:grid-cols-4" data-stagger>
           {specs.map(([k, v]) => (
             <div key={k} className="t14">
               <p className="font-medium">{k}</p>
@@ -141,35 +165,38 @@ function Product() {
 function MoreThan() {
   const cards = [
     { k: "orb", t: "Market price.", d: "From a pool of the index token when one exists. When none exists, the page says so and shows where it looked." },
-    { k: "orb ring", t: "NAV per token.", d: "What the index itself says one token is worth, plus the same figure recomputed from its holdings as a cross-check." },
+    { k: "orb halo", t: "NAV per token.", d: "What the index itself says one token is worth, plus the same figure recomputed from its holdings as a cross-check." },
     { k: "orb soft", t: "The gap.", d: "Premium or discount in percent. The PK example: $1.05 against a NAV of $1.00 is +5 %." },
     { k: "orb", t: "The age.", d: "Each number keeps its own time. Stock price feeds pause outside US market hours, so a weekend NAV is Friday's." },
   ];
   return (
-    <section className="pt-28 md:pt-36" data-testid="more-than">
-      <div className="wrap text-center">
-        <Reveal>
-          <h2 className="d4 two-tone mx-auto max-w-[760px]">
-            More than a number. <span className="dim">A price, a NAV, a gap and an age, each with its source.</span>
+    <section className="pt-28 md:pt-36" data-testid="more-than" data-hpin>
+      <div data-hpin-stage>
+        <div className="wrap text-center">
+          <h2 className="d4 two-tone mx-auto max-w-[760px]" data-words>
+            <Words text="More than a number." />{" "}
+            <span className="dim">
+              <Words text="A price, a NAV, a gap and an age, each with its source." />
+            </span>
           </h2>
-        </Reveal>
-      </div>
-      <div className="mt-12 overflow-x-auto pb-4" data-qa-bleed>
-        <div className="wrap flex gap-4">
-          {cards.map((c, i) => (
-            <Reveal key={i} delay={i * 70} className="w-[300px] shrink-0 md:w-[400px]">
-              <div className={`${c.k} h-[220px] md:h-[300px]`} />
-              <p className="t15 mt-4">
-                <b className="font-medium">{c.t}</b> <span className="muted">{c.d}</span>
-              </p>
-            </Reveal>
-          ))}
         </div>
-      </div>
-      <div className="mt-10 text-center">
-        <Link href="/method" className="pill pill-black">
-          How every number is computed {go}
-        </Link>
+        <div className="mt-12 overflow-x-auto pb-4" data-qa-bleed data-hpin-scroller>
+          <div className="wrap flex gap-4" data-hpin-track data-stagger>
+            {cards.map((c, i) => (
+              <div key={i} className="w-[300px] shrink-0 md:w-[400px]">
+                <div className={`${c.k} h-[220px] md:h-[300px]`} data-zoom />
+                <p className="t15 mt-4">
+                  <b className="font-medium">{c.t}</b> <span className="muted">{c.d}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mt-10 text-center">
+          <Link href="/method" className="pill pill-black">
+            How every number is computed {go}
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -188,7 +215,7 @@ function Holders() {
         <h2 className="d2 text-center">Built for holders</h2>
         <p className="t15 muted mt-3 text-center">Clarity, sources, ages, no advice.</p>
       </Reveal>
-      <div className="mx-auto mt-14 grid max-w-[700px] gap-x-12 gap-y-10 md:grid-cols-2">
+      <div className="mx-auto mt-14 grid max-w-[700px] gap-x-12 gap-y-10 md:grid-cols-2" data-stagger>
         {items.map(([b, t]) => (
           <p key={b} className="t15">
             <b className="font-medium">{b}</b> <span className="muted">{t}</span>
@@ -205,9 +232,9 @@ function Guided() {
       <Reveal>
         <h2 className="d4 mx-auto max-w-[620px] text-center">Pick a side. Set a threshold. See what a rule would say.</h2>
       </Reveal>
-      <div className="mt-10">
+      <Reveal kind="scale" className="mt-10">
         <RuleTabs />
-      </div>
+      </Reveal>
     </section>
   );
 }
@@ -235,15 +262,17 @@ function Why() {
   ];
   return (
     <section className="wrap pt-28 md:pt-36" data-testid="why">
-      <p className="t15 muted text-center">Why Vellen reads differently</p>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Reveal as="p" className="t15 muted text-center">
+        Why Vellen reads differently
+      </Reveal>
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
         {cards.map(([t, d], i) => (
-          <Reveal key={t} delay={i * 60}>
-            <div className={`${i % 2 ? "orb ring" : "orb"} h-[200px]`} />
+          <div key={t}>
+            <div className={`${i % 2 ? "orb halo" : "orb"} h-[200px]`} data-zoom />
             <p className="t15 mt-4">
               <b className="font-medium">{t}</b> <span className="muted">{d}</span>
             </p>
-          </Reveal>
+          </div>
         ))}
       </div>
     </section>
@@ -253,17 +282,17 @@ function Why() {
 function Pricing() {
   return (
     <section className="wrap pt-28 md:pt-36" data-testid="pricing">
-      <div className="card px-6 py-12 md:px-12 md:py-16">
+      <div className="card px-6 py-12 md:px-12 md:py-16" data-reveal="scale">
         <p className="t14 muted text-center">{BRAND.name}</p>
         <h2 className="d3 mt-2 text-center">Free to read. Rules on chain.</h2>
-        <div className="mt-10 grid gap-3 md:grid-cols-4">
+        <div className="mt-10 grid gap-3 md:grid-cols-4" data-stagger>
           {["No wallet needed", "No account, no e-mail", "Sources linked on every number", "Contract holds no funds"].map((t) => (
             <div key={t} className="rounded-2xl bg-white/70 p-5 t14">
               {t}
             </div>
           ))}
         </div>
-        <div className="mt-3 grid gap-3 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="mt-3 grid gap-3 md:grid-cols-[1.4fr_1fr_1fr]" data-stagger>
           <div className="rounded-2xl bg-white/70 p-6">
             <p className="t14 muted">What runs today</p>
             <ul className="mt-3 grid gap-2 t15">
@@ -299,11 +328,15 @@ function Pricing() {
 function CtaBand() {
   return (
     <section className="pt-24" data-testid="cta-band">
-      <div className="band dark inset flex min-h-[460px] flex-col items-center justify-center px-6 text-center">
-        <h2 className="d3 max-w-[760px]">Bring the gap into view before you mint, redeem or trade.</h2>
-        <Link href="/gap" className="pill pill-black lg mt-10 border border-white/15">
-          Open the Gap Watch {go}
-        </Link>
+      <div className="band dark inset flex min-h-[460px] flex-col items-center justify-center px-6 text-center" data-scrub="inset">
+        <h2 className="d3 max-w-[760px]" data-words>
+          <Words text="Bring the gap into view before you mint, redeem or trade." />
+        </h2>
+        <Reveal className="mt-10">
+          <Link href="/gap" className="pill pill-black lg border border-white/15">
+            Open the Gap Watch {go}
+          </Link>
+        </Reveal>
       </div>
     </section>
   );
@@ -319,10 +352,10 @@ function Steps() {
   ];
   return (
     <section className="wrap pt-24" data-testid="steps">
-      <div className="redcard dark px-6 py-14 md:px-16 md:py-20">
+      <div className="redcard dark px-6 py-14 md:px-16 md:py-20" data-reveal="scale">
         <p className="t14 muted text-center">How a reading is made</p>
         <h2 className="d4 mt-3 text-center">From chain data to a dated gap in clear steps</h2>
-        <div className="mx-auto mt-10 grid max-w-[560px] gap-2">
+        <div className="mx-auto mt-10 grid max-w-[560px] gap-2" data-stagger>
           {steps.map(([t, d], i) => (
             <details key={t} className="acc" open={i === 0}>
               <summary>
@@ -346,9 +379,11 @@ function NotClaimed() {
   ];
   return (
     <section className="wrap pt-24" data-testid="not-claimed">
-      <p className="t14 muted">In our own words</p>
-      <h2 className="d4 mt-2">What Vellen does not claim</h2>
-      <div className="mt-8 grid gap-3 md:grid-cols-3">
+      <Reveal>
+        <p className="t14 muted">In our own words</p>
+        <h2 className="d4 mt-2">What Vellen does not claim</h2>
+      </Reveal>
+      <div className="mt-8 grid gap-3 md:grid-cols-3" data-stagger>
         {items.map(([q, d]) => (
           <div key={q} className="card-line flex min-h-[220px] flex-col justify-between p-6">
             <p className="t18">{q}</p>

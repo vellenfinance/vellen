@@ -17,7 +17,7 @@ export default function TokenPage() {
         The comparison, the history and the calculator are free and work without it. {BRAND.symbol} is a memecoin with a planned utility: not a share of anything,
         not a claim on the index, not a promise of value.
       </PageHead>
-      <div className="wrap grid grid-cols-1 gap-3 pt-12 lg:grid-cols-2">
+      <div className="wrap grid grid-cols-1 gap-3 pt-12 lg:grid-cols-2" data-stagger>
         <section className="card p-6 md:p-8" data-testid="token-ca">
           <h2 className="d4">Contract address</h2>
           <p className="t15 muted mt-3">

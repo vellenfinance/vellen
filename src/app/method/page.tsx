@@ -35,7 +35,7 @@ export default function MethodPage() {
         and {CONTRACT_NAME} (VellenGapMath) run the same lines, checked on 458 generated cases.
       </PageHead>
       <div className="wrap narrow pt-10">
-        <dl>
+        <dl data-stagger>
           <Row k="The index read">
             The live IPO index on {CHAIN.name} (chain {CHAIN.id}). Index token (ERC-4626, asset {INDEX.assetSymbol}): <A a={INDEX.vault} />. Constituent list
             (getActiveTokens): <A a={INDEX.registry} />. Price oracle (observe, getFeedConfig): <A a={INDEX.navOracle} />. Vellen is not part of it and names it
@@ -83,8 +83,10 @@ export default function MethodPage() {
             the age shown). Nothing here is advice.
           </Row>
         </dl>
-        <h2 className="d4 mt-16">Status of each part</h2>
-        <div className="mt-6 grid gap-2">
+        <h2 className="d4 mt-16" data-reveal="">
+          Status of each part
+        </h2>
+        <div className="mt-6 grid gap-2" data-stagger>
           {FEATURES.map((f) => (
             <div key={f.key} className="card-line grid gap-2 px-5 py-4 md:grid-cols-[260px_1fr_auto] md:items-start">
               <b className="t15 font-medium">{f.name}</b>

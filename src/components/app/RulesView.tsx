@@ -35,7 +35,7 @@ export function RulesView() {
   const legs = (snap?.legs ?? []).filter((l) => l.pool);
   return (
     <>
-      <section className="wrap pt-12" data-testid="rules-proposed">
+      <section className="wrap pt-12" data-reveal="" data-testid="rules-proposed">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="d4">The track for the live index</h2>
           <StatusBadge status={live ? "Prototype" : "Concept"} />
@@ -93,9 +93,9 @@ function StatusTable() {
     ["Holdings not covered", "The constituent list does not explain the index's totalAssets (within 0.1 %)."],
   ];
   return (
-    <section className="wrap pt-16" data-testid="status-table">
+    <section className="wrap pt-16" data-reveal="" data-testid="status-table">
       <h2 className="d4">What evaluate(rule) answers</h2>
-      <div className="mt-6 grid gap-2">
+      <div className="mt-6 grid gap-2" data-stagger>
         {rows.map(([k, v]) => (
           <div key={k} className="card-line grid gap-2 px-5 py-4 t14 md:grid-cols-[220px_1fr]">
             <b className="font-medium">{k}</b>
@@ -174,7 +174,7 @@ function LiveRules({ legs }: { legs: { token: string; pool: string }[] }) {
   ) : null;
 
   return (
-    <section className="wrap pt-16" data-testid="rules-live">
+    <section className="wrap pt-16" data-reveal="" data-testid="rules-live">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="d4">Tracks and checkpoints</h2>
         <a className="link t14" href={explorerAddress(W())} target="_blank" rel="noreferrer">
@@ -182,7 +182,7 @@ function LiveRules({ legs }: { legs: { token: string; pool: string }[] }) {
         </a>
       </div>
       {msg ? <p className="note info mt-4" aria-live="polite" data-testid="tx-msg">{msg}</p> : null}
-      <div className="mt-6 grid gap-3">
+      <div className="mt-6 grid gap-3" data-stagger>
         {tracks.map(({ id, t, cp, count, preview }) => (
           <div key={id} className="card p-6 t14" data-testid={`track-${id}`}>
             <div className="flex flex-wrap items-center justify-between gap-3">

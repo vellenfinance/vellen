@@ -58,7 +58,7 @@ function Headline({ s, now }: { s: Snap; now: number }) {
   const basket = e18(s.basket.twap);
   const navAge = s.index.navUpdatedAt ? now - s.index.navUpdatedAt : null;
   return (
-    <section className="wrap pt-12 md:pt-16" data-testid="headline">
+    <section className="wrap pt-12 md:pt-16" data-reveal="" data-testid="headline">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="eyebrow">Index</p>
@@ -75,7 +75,7 @@ function Headline({ s, now }: { s: Snap; now: number }) {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-3 md:grid-cols-3">
+      <div className="mt-8 grid gap-3 md:grid-cols-3" data-stagger>
         <div className="card p-6" data-testid="card-market">
           <p className="t14 muted">Market price of the index token</p>
           {s.market.found ? (
@@ -147,13 +147,13 @@ const Row = ({ k, v }: { k: string; v: string }) => (
 
 function MarketSearch({ s }: { s: Snap }) {
   return (
-    <section className="wrap pt-16" data-testid="market-search">
+    <section className="wrap pt-16" data-reveal="" data-testid="market-search">
       <h2 className="d4">Where a market was looked for</h2>
       <p className="t15 muted mt-3 max-w-[760px]">
         Every venue Vellen checks for a pool of the index token, with the answer the chain gave. If one appears later, this list says so and the gap becomes
         measurable.
       </p>
-      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
         {s.market.checks.map((c, i) => (
           <div key={i} className="card-line flex items-center justify-between gap-3 px-4 py-3 t14">
             <span>
@@ -183,13 +183,13 @@ function Constituents({ s, now }: { s: Snap; now: number }) {
   const { address } = useWallet();
   const total = s.legs.reduce((a, l) => a + (e18(l.valueOracle) ?? 0), 0) + Number(s.index.cash) / 1e6;
   return (
-    <section className="wrap pt-16" data-testid="constituents">
+    <section className="wrap pt-16" data-reveal="" data-testid="constituents">
       <h2 className="d4">What the index holds</h2>
       <p className="t15 muted mt-3 max-w-[760px]">
         Constituents from the index&apos;s own list (getActiveTokens). A ticker is shown only for official stock tokens proven on chain (proxy code, beacon, supply);
         they are tokens on Robinhood Chain, not the shares themselves. {address ? "" : "Connecting a wallet is not needed for any of this."}
       </p>
-      <div className="mt-6 grid gap-2 lg:hidden" data-testid="leg-cards">
+      <div className="mt-6 grid gap-2 lg:hidden" data-testid="leg-cards" data-stagger>
         {s.legs.map((l) => (
           <LegCard key={l.token} l={l} total={total} now={now} />
         ))}
@@ -331,7 +331,7 @@ function Calculator({ s }: { s: Snap }) {
   const hit = g !== null && okThr ? crosses(dir, bps, g) : null;
   const b = okThr ? band(nav, bps) : null;
   return (
-    <section className="wrap pt-20" id="calculator" data-testid="calculator">
+    <section className="wrap pt-20" data-reveal="" id="calculator" data-testid="calculator">
       <div className="card grid gap-8 p-6 md:grid-cols-[1fr_1fr] md:p-10">
         <div>
           <p className="eyebrow">Threshold calculator · Prototype</p>
@@ -400,7 +400,7 @@ function Calculator({ s }: { s: Snap }) {
 function History({ s }: { s: Snap }) {
   const { data, error, loading } = useJson<Hist>("/api/gap/history", 0);
   return (
-    <section className="wrap pt-20" id="history" data-testid="history">
+    <section className="wrap pt-20" data-reveal="" id="history" data-testid="history">
       <h2 className="d4">What the chain can prove about the past</h2>
       <p className="t15 muted mt-3 max-w-[820px]">
         Every mint and redeem of the index token executed at a price (assets ÷ tokens, from the event). Next to it: NAV read at the block before, so the gap of each

@@ -1,14 +1,28 @@
 /*
- * Vellen's mark (AI-made placeholder until the owner's artwork arrives, see referensi/tools/apply-owner-assets.mjs): a ring
- * for NAV and a solid dot pulled off it for the market price, the gap between them being the whole product. Drawn in
- * currentColor, so it works on the cream ground and on the dark bands.
+ * Vellen's mark: the owner's V (two slanted strokes over a base bar), from /brand/mark.webp. The file is white on transparent,
+ * so it is used as a CSS mask and painted in currentColor: black on the cream ground, cream on the dark bands.
+ * Aspect of the trimmed artwork: 381 x 256.
  */
+const MARK_RATIO = 381 / 256;
+
 export function MarkGlyph({ size = 22 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" className="block shrink-0">
-      <circle cx="10" cy="13.5" r="7.6" fill="none" stroke="currentColor" strokeWidth="2.4" />
-      <circle cx="17.6" cy="6.4" r="4.4" fill="currentColor" />
-    </svg>
+    <span
+      aria-hidden="true"
+      className="block shrink-0 bg-current"
+      style={{
+        width: Math.round(size * MARK_RATIO),
+        height: size,
+        WebkitMaskImage: "url(/brand/mark.webp)",
+        maskImage: "url(/brand/mark.webp)",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+      }}
+    />
   );
 }
 
@@ -16,7 +30,7 @@ export function MarkGlyph({ size = 22 }: { size?: number }) {
 export function Wordmark({ size = 20 }: { size?: number }) {
   return (
     <span className="inline-flex items-center gap-2">
-      <MarkGlyph size={Math.round(size * 1.05)} />
+      <MarkGlyph size={Math.round(size * 0.82)} />
       <span className="leading-none font-semibold tracking-[-0.02em]" style={{ fontSize: size }}>
         vellen
       </span>

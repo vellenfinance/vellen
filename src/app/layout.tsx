@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { FloatPill } from "@/components/site/FloatPill";
+import { MOTION_BOOT, Motion } from "@/components/site/Motion";
 import { WalletModalProvider } from "@/components/wallet/WalletButton";
 import { WalletProvider } from "@/components/wallet/WalletProvider";
 import { BRAND } from "@/config/brand";
@@ -32,11 +33,10 @@ export const viewport: Viewport = { themeColor: "#fcf8f1", colorScheme: "light" 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${ui.variable} ${figures.variable}`}>
+    <html lang="en" className={`${ui.variable} ${figures.variable}`} suppressHydrationWarning>
       <head>
-        <noscript>
-          <style>{".bl-reveal{opacity:1!important;transform:none!important}"}</style>
-        </noscript>
+        {/* Sets html.mo before first paint so scroll reveals start hidden only when motion is allowed (see Motion.tsx). */}
+        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT }} />
       </head>
       <body>
         <a className="bl-skip" href="#main">
@@ -49,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main id="main">{children}</main>
             <SiteFooter />
             <FloatPill />
+            <Motion />
           </WalletModalProvider>
         </WalletProvider>
       </body>

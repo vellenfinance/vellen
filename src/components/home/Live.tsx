@@ -47,8 +47,8 @@ export function LivePanel() {
   const { data, error } = useGap();
   const now = useNow();
   return (
-    <div className="band dark inset px-6 py-14 md:px-16 md:py-20" data-testid="live-panel">
-      <div className="mx-auto grid max-w-[1180px] gap-10 md:grid-cols-3">
+    <div className="band dark inset px-6 py-14 md:px-16 md:py-20" data-testid="live-panel" data-scrub="inset">
+      <div className="mx-auto grid max-w-[1180px] gap-10 md:grid-cols-3" data-stagger>
         <Figure label="Market price of the index token" value={data ? (data.market.found ? "Pool found" : "No market") : "…"} note={data ? (data.market.found ? "see the Gap Watch" : "no pool on Uniswap v2, v3 or v4") : ""} />
         <Figure label="NAV per token" value={data ? money(e18(data.index.nav), 4) : "…"} note={data ? `oldest price ${ageOf(data.index.navUpdatedAt, now)} old` : ""} mono />
         <Figure
@@ -92,7 +92,7 @@ export function ConstituentCards() {
   if (!data) return <div className="card h-[220px] animate-pulse" />;
   const total = data.legs.reduce((a, l) => a + (e18(l.valueOracle) ?? 0), 0);
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="constituent-cards">
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-testid="constituent-cards" data-stagger>
       {data.legs.map((l) => (
         <div key={l.token} className="orb soft min-h-[220px] p-6">
           <div className="flex items-center justify-between gap-3">

@@ -25,13 +25,13 @@ export function pageMeta({
 }): Metadata {
   const url = `${BRAND.url}${path === "/" ? "" : path}`;
   // Child routes that set openGraph replace the inherited file-based image, so name it explicitly.
-  const images = [{ url: "/opengraph-image.jpg?v=e30cbc02", width: 1200, height: 630, alt: `${BRAND.name}: ${BRAND.slogan}` }];
+  const images = [{ url: "/opengraph-image.jpg?v=fbb2fc53", width: 1200, height: 630, alt: `${BRAND.name}: ${BRAND.slogan}` }];
   return {
     title: { absolute: title },
     description,
     alternates: { canonical: url },
     openGraph: { type, url, siteName: BRAND.name, title, description, locale: "en_US", images },
-    twitter: { card: "summary_large_image", site: BRAND.xHandle, creator: BRAND.xHandle, title, description, images: [{ url: "/twitter-image.jpg?v=e30cbc02", alt: `${BRAND.name}: ${BRAND.slogan}` }] },
+    twitter: { card: "summary_large_image", site: BRAND.xHandle, creator: BRAND.xHandle, title, description, images: [{ url: "/twitter-image.jpg?v=fbb2fc53", alt: `${BRAND.name}: ${BRAND.slogan}` }] },
     robots: noindex ? { index: false, follow: true } : undefined,
   };
 }

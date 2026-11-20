@@ -1,35 +1,71 @@
-"use client";
+/*
+ * Markup helpers for the motion driver (Motion.tsx). They only add data attributes and spans; nothing is hidden unless the driver
+ * is running, so without JavaScript or with reduced motion everything reads normally.
+ */
 
-import { useEffect, useRef } from "react";
+type Tag = "div" | "section" | "li" | "article" | "p" | "h2";
 
-/* Fades a block up once it scrolls into view. Without JavaScript or with reduced motion it is simply visible. */
-export function Reveal({ children, className = "", delay = 0, as: Tag = "div" }: { children: React.ReactNode; className?: string; delay?: number; as?: "div" | "section" | "li" | "article" }) {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.classList.add("in");
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries)
-          if (e.isIntersecting) {
-            window.setTimeout(() => el.classList.add("in"), delay);
-            io.disconnect();
-          }
-      },
-      { rootMargin: "0px 0px -8% 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [delay]);
-  const Any = Tag as React.ElementType;
+/** Blurs and fades a block up once it scrolls into view. `delay` in ms. */
+export function Reveal({
+  children,
+  className = "",
+  delay = 0,
+  kind,
+  as: El = "div",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  kind?: "fade" | "scale";
+  as?: Tag;
+}) {
   return (
-    <Any ref={ref} className={`bl-reveal ${className}`}>
+    <El className={className || undefined} data-reveal={kind ?? ""} data-delay={delay || undefined}>
       {children}
-    </Any>
+    </El>
+  );
+}
+
+/** Splits plain text into word spans that the driver lights up while the block crosses the viewport (parent needs data-words). */
+export function Words({ text }: { text: string }) {
+  const parts = text.split(/(\s+)/);
+  return (
+    <>
+      {parts.map((p, i) =>
+        /^\s+$/.test(p) || p === "" ? (
+          p
+        ) : (
+          <span key={i} className="w">
+            {p}
+          </span>
+        ),
+      )}
+    </>
+  );
+}
+
+/** A headline whose characters arrive one after another on load (pure CSS; the real text stays readable to screen readers). */
+export function SplitChars({ text, start = 0 }: { text: string; start?: number }) {
+  let n = start;
+  const words = text.split(" ");
+  return (
+    <>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true" className="chars">
+        {words.map((w, wi) => (
+          <span key={wi}>
+            <span className="wd">
+              {[...w].map((c, ci) => (
+                <span key={ci} className="c" style={{ "--i": n++ } as React.CSSProperties}>
+                  {c}
+                </span>
+              ))}
+            </span>
+            {wi < words.length - 1 ? " " : null}
+          </span>
+        ))}
+      </span>
+    </>
   );
 }
 
