@@ -10,7 +10,7 @@ This repository is the working code behind https://vellen.finance.
 
 - **What runs today.** The Gap Watch reads the live IPO index on Robinhood Chain: NAV per token, the age of the oldest constituent price, a search of Uniswap v2, v3 and v4 for a market of the index token, the holdings priced at their own pools (a 30-minute time-weighted "look-through" gap), every mint and redeem against NAV at the block before, and a threshold calculator. Free, no wallet.
 - **What the chain says right now.** No pool trades the index token, so its own premium or discount is not measurable. The site says "No market" and shows where it looked, instead of borrowing a price from somewhere else.
-- **The contract.** `VellenGapWatch` records tracks, checkpoints it computes itself (NAV, time-weighted price, both ages, the gap) and threshold rules with a cooldown. It is built and tested but **not deployed yet**.
+- **The contract.** `VellenGapWatch` records tracks, checkpoints it computes itself (NAV, time-weighted price, both ages, the gap) and threshold rules with a cooldown. It is live on Robinhood Chain at `0x45fd0dca84e7c3cde143f576152b0188e781a3ac`, source verified on Blockscout.
 - **Planned, not built.** Alerts when a rule fires, and testing $VELLEN as credits for those alerts.
 - **What nothing here claims.** No safety guarantee, no trading signal, no advice, no promised value for $VELLEN. Vellen is not affiliated with the index it reads, with Robinhood or with any issuer. Stock tokens are tokens on Robinhood Chain, not the shares themselves.
 
@@ -18,7 +18,7 @@ This repository is the working code behind https://vellen.finance.
 
 | Path | What it is |
 |---|---|
-| `src/app/` | Pages (`/`, `/gap`, `/rules`, `/method`, `/token`, local-only `/deploy`) and API routes (`/api/gap`, `/api/gap/history`, `/api/chain`, `/api/rpc`). |
+| `src/app/` | Pages (`/`, `/gap`, `/rules`, `/method`, `/token`) and API routes (`/api/gap`, `/api/gap/history`, `/api/chain`, `/api/rpc`). |
 | `src/components/` | Interface components: home sections, the Gap Watch, the rules view, wallet dialog, header and footer. |
 | `src/config/` | `brand.ts` (name, ticker, token address, links), `index.ts` (the index contracts read and how their functions were identified), `contracts.ts` (deployed contract address). |
 | `src/lib/` | `gap/math.ts` (the formula, one-to-one with the contract), `server/gap.ts` (live reading), `server/gaphistory.ts` (proven history), the RPC relay rules and rate limits. |
@@ -52,7 +52,7 @@ forge test --match-contract Fork --fork-url https://rpc.mainnet.chain.robinhood.
 
 ### What was checked for this snapshot
 
-20 Nov 2026 (UTC), Node.js 25, forge 1.5.1: typecheck exit 0; `npm test` 27 pass / 0 fail; production build 18 routes; `forge test` 36 passed (29 unit and hostile-input tests incl. 2 fuzz at 1,024 runs, 4 parity tests over 458 vectors from the site's math, 3 invariants) and 5 fork tests against the live index passed separately (NAV equals `convertToAssets`, no direct pool, look-through gap +0.375 %, tick math brackets live pool prices). Browser tests with an injected wallet on an anvil fork are listed in the internal notes; they need a local chain and are not part of `npm test`.
+20 Nov 2026 (UTC), Node.js 25, forge 1.5.1: typecheck exit 0; `npm test` 27 pass / 0 fail; production build 18 routes; `forge test` 36 passed (29 unit and hostile-input tests incl. 2 fuzz at 1,024 runs, 4 parity tests over 458 vectors from the site's math, 3 invariants) and 5 fork tests against the live index passed separately (NAV equals `convertToAssets`, no direct pool, look-through gap +0.375 %, tick math brackets live pool prices). Browser tests with an injected wallet on an anvil fork are listed in the internal notes; they need a local chain and are not part of `npm test`. Mainnet deployment (block 119,061,090): `verify-deployment` printed MATCH (runtime byte for byte, factory argument, creation input).
 
 ## Look at the site
 
@@ -68,14 +68,14 @@ Open http://localhost:6590. Everything works with no configuration: the server r
 
 | Contract | Address | Explorer |
 |---|---|---|
-| VellenGapWatch | not deployed yet | — |
+| VellenGapWatch | `0x45fd0dca84e7c3cde143f576152b0188e781a3ac` | [Blockscout](https://robinhoodchain.blockscout.com/address/0x45fd0dca84e7c3cde143f576152b0188e781a3ac?tab=contract) |
 
 `VellenGapWatch` takes one constructor argument, the Uniswap v3 factory on Robinhood Chain (`0x1f7d7550b1b028f7571e69a784071f0205fd2efa`); every pool a track uses must come from it. A track names an ERC-4626 index token and its market side: none, a pool of the token against its asset, or the basket of holdings priced at constituent pools. `recordCheckpoint` computes NAV, the time-weighted price (window of 60 seconds to 1 day), both ages and the gap, and stores them (one per second per track). Rules hold a direction, a threshold in basis points and a cooldown; `evaluate` returns Triggered, Clear, Cooldown, or why it cannot judge (no market, NAV stale or invalid, price stale, holdings not covered); `fire` records a crossing once per checkpoint and cooldown. No owner, no admin, no fee, no upgrade, and it accepts no ether and holds no funds.
 
 ## Verify a deployment
 
 ```
-npm run verify-deployment -- --watch <address> --watch-tx <creation tx hash>
+npm run verify-deployment -- --watch 0x45fd0dca84e7c3cde143f576152b0188e781a3ac --watch-tx 0xdca0393d492170c4f76af5a1e85dc54e4e043ec573a096f9c07e51e4dff0a87b
 ```
 
 The script compares the bytecode on Robinhood Chain with the build in this repository (the factory immutable must hold the factory above) and the creation transaction with the creation code plus the constructor argument, and prints MATCH or the first difference.
@@ -118,8 +118,8 @@ $VELLEN (Vellen Finance) is the community token of Vellen on Robinhood Chain. Co
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Shared rate-limit store | `https://…`, token string |
 | `STORE_KEY_PREFIX` | Key prefix in that store | short text, default `vellen:` |
 
-3. Point your domain at the host. After the deploy: `/` answers 200, `/api/gap` returns JSON with `"ok":true` and a block number, `/deploy` is 404.
-4. Contract: deploy `VellenGapWatch` with the factory address above (the local-only `/deploy` page does it from your wallet), put the address and block into `src/config/contracts.ts`, then run `npm run verify-deployment`.
+3. Point your domain at the host. After the deploy: `/` answers 200, `/api/gap` returns JSON with `"ok":true` and a block number, `/api/gap/history` answers 200.
+4. Contract: the site points at the deployed `VellenGapWatch` above. To use your own, deploy it with the factory address as its only argument (for example `forge create`), put the address and block into `src/config/contracts.ts`, then run `npm run verify-deployment`.
 
 ## Contributing
 

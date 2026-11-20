@@ -14,9 +14,9 @@ export const FAQ_BUILDERS = [
   { q: "Where do the numbers come from?", a: "Straight from Robinhood Chain: the index token (ERC-4626 convertToAssets, totalAssets, totalSupply), its constituent list, its price oracle (which reads Chainlink feeds), Uniswap v3 pools (observe for the TWAP, slot0 for spot) and PoolManager logs for v4." },
   { q: "How were the index's functions identified?", a: "Its source is not published on Sourcify, so the functions come from the bytecode's selector table, resolved against public signature databases, and each one used was called and cross-checked on chain (for example, totalAssets equals the holdings times the oracle prices plus cash)." },
   { q: "What does the contract do?", a: "VellenGapWatch stores tracks (an index token and how its market side is priced), checkpoints it computes itself (NAV, time-weighted price, both ages, the gap) and threshold rules with a cooldown; evaluate() says whether the latest checkpoint crosses a rule. It holds no funds, has no owner and accepts no ether." },
-  { q: "Is the contract deployed?", a: "Not yet. It is built and tested (unit, hostile-input, invariant and fork tests against the live index); the owner deploys it later. Until then the Rules page reads nothing from it and says so." },
+  { q: "Is the contract deployed?", a: "Yes. VellenGapWatch is live on Robinhood Chain and its source is verified on the explorer; the Method page links the address. It is built and tested (unit, hostile-input, invariant and fork tests against the live index)." },
   { q: "Why a 30-minute TWAP?", a: "A spot price can be pushed inside one block; a time-weighted average over 30 minutes cannot be moved cheaply. The site and the contract use the same window." },
-  { q: "What are the risks?", a: "Vellen is a concept with a new prototype and a new, not yet deployed contract. Data can be stale or unavailable, and an index can change its constituents. Treat every figure as a reading with a date, not a guarantee." },
+  { q: "What are the risks?", a: "Vellen is a concept with a new prototype and a newly deployed contract. Data can be stale or unavailable, and an index can change its constituents. Treat every figure as a reading with a date, not a guarantee." },
 ];
 
 export const FAQ = [...FAQ_HOLDERS, ...FAQ_BUILDERS];

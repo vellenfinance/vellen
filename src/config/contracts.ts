@@ -1,17 +1,18 @@
 import { isAddress } from "@/config/brand";
 
 /*
- * Vellen's contract on Robinhood Chain (chain 4663): VellenGapWatch (+ internal library VellenGapMath).
- * NOT DEPLOYED YET: the owner deploys it from /deploy (localhost only), constructor argument = the Uniswap v3 factory
- * 0x1f7d7550b1b028f7571e69a784071f0205fd2efa. Then put the address and block below and run
- * `npm run verify-deployment -- --watch <address> --watch-tx <tx>`.
+ * Vellen's contract on Robinhood Chain (chain 4663): VellenGapWatch (+ internal library VellenGapMath, inlined, nothing to link),
+ * live and source-verified on Blockscout since 2026-11-20. Constructor argument = the Uniswap v3 factory
+ * 0x1f7d7550b1b028f7571e69a784071f0205fd2efa. Check it: `npm run verify-deployment -- --watch <address> --watch-tx <tx>`.
  *   Tracks (index token + how its market side is priced), checkpoints computed by the contract (NAV, TWAP price, both
  *   ages, gap), threshold rules with cooldown, evaluate/fire. No owner, no fee, no upgrade, accepts no ether.
  */
 const DEPLOYED = {
-  watch: "TBA",
-  /** Block of the deployment transaction (0 until deployed). */
-  block: 0,
+  watch: "0x45fd0dca84e7c3cde143f576152b0188e781a3ac",
+  /** Block of the deployment transaction. */
+  block: 119061090,
+  /** Creation transaction. */
+  tx: "0xdca0393d492170c4f76af5a1e85dc54e4e043ec573a096f9c07e51e4dff0a87b",
 };
 
 /**

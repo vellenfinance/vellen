@@ -44,7 +44,7 @@ export function RuleTabs() {
         <p className={`rounded-full px-6 py-3 t15 font-medium ${hit ? "bg-[var(--cream)] text-black" : "border border-white/30"}`}>{hit ? "Rule triggers" : "Rule stays quiet"}</p>
       </div>
       <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-white/15 pt-6">
-        <p className="t14 muted">Try it on the live reading, or record a rule on chain once the contract is deployed.</p>
+        <p className="t14 muted">Try it on the live reading, or record a rule on chain.</p>
         <Link href="/gap#calculator" className="pill pill-cream">
           Open the calculator <ArrowRight size={14} />
         </Link>

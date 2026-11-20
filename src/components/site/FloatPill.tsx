@@ -31,7 +31,7 @@ export function FloatPill() {
     const t = window.setTimeout(() => setHidden(off), 1200);
     return () => window.clearTimeout(t);
   }, []);
-  if (hidden || far || path === "/gap" || path === "/deploy") return null;
+  if (hidden || far || path === "/gap") return null;
   return (
     <div className="floatpill" data-testid="float-pill">
       <button
