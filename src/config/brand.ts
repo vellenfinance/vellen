@@ -23,7 +23,7 @@ const DOMAIN = "vellen.finance";
 /** Token name (lead decision 20 Nov 2026, see the internal notes). */
 const TOKEN_NAME = "Vellen Finance";
 /** X account of the project. */
-const X_HANDLE = "vellen";
+const X_HANDLE = "vellenfinance";
 
 export const BRAND = {
   name: NAME,
